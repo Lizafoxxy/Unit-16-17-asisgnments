@@ -1,30 +1,24 @@
+import sys
 
-text = input(f"Введите текст: ")
-punc_marks = '''.,!?':;()-—"123456789*@#+='\\'{}[]|'''
+# вынесла в отдельную функцию "зачистку" текста от знаков препинания, знака абзаца и двойных пробелов
+def clean_text(some_text):
+    punc_marks = '''.,!?':;()-—"123456789*@#+='\\'{}[]|'''
+    for i in punc_marks:
+        if i in some_text:
+            some_text = some_text.replace(i, '')
+    some_text = some_text.replace('\n', '')
+    some_text = some_text.replace('  ', ' ')
+    return some_text
+def count_unique():
+    print("Введите текст: ")
+    text = sys.stdin.readline()
+    new_text = clean_text(text)
+    word_list = list(new_text.split(sep=' '))
+    unique = 0
 
-# удаляем из текста все, что мешает подсчету слов - знаки препинания и двойные пробелы
-for i in punc_marks:
-    if i in text:
-        text = text.replace(i, '')
-text = text.replace('  ', ' ')
+    for i in range(0, len(word_list)):
+        if word_list[i] not in word_list[(i + 1):len(word_list)] and word_list[i] not in word_list[0:i]:
+            unique += 1
+    print(f"В тексте {unique} уникальных слов(а).")
 
-# создаем список всех слов в тексте и словарь из них же, где значение это счетчик встречаемости (по дефолту 0)
-word_list = list(text.split(sep=' '))
-text_dict = dict.fromkeys(word_list, 0)
-
-
-
-# в значениях словаря подсчитываем встречаемость каждого слова
-for i in word_list:
-    text_dict[i] += 1
-
-# считаем сколько слов в словаре встречаются по одному разу
-count_unique = 0
-for value in text_dict.values():
-    if value == 1:
-        count_unique +=1
-
-
-print(f"В тексте {count_unique} уникальных слов(а).")
-
-
+count_unique()
